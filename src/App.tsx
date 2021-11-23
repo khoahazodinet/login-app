@@ -6,8 +6,8 @@ import axios from "axios";
 function App() {
     const {executeRecaptcha} = useGoogleReCaptcha();
     const [data, setData] = useState<{
-        userName: string, password: string, recaptcha: string|null}>(
-            {
+        userName: string, password: string, recaptcha: string|null}>
+    ({
         userName: '',
         password: '',
         recaptcha: null
@@ -30,6 +30,7 @@ function App() {
         })
     },[data.recaptcha])
 
+    console.log(data)
     const fetchData = useCallback(() => {
         if (!executeRecaptcha) {
             console.log('recaptcha can not use');
@@ -44,7 +45,7 @@ function App() {
         }).catch(req=>{
             console.log('error', req)
         })
-    },[])
+    },[executeRecaptcha, data])
 
     const handleSubmit = (e: FormEvent<HTMLFormElement>)=>{
         e.preventDefault();
