@@ -1,26 +1,86 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, {ChangeEvent, FormEvent, useCallback, useEffect, useState} from 'react';
+import {useGoogleReCaptcha} from 'react-google-recaptcha-v3';
+import axios from "axios";
+
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    const {executeRecaptcha} = useGoogleReCaptcha();
+    const [data, setData] = useState<{
+        userName: string, password: string, recaptcha: string|null}>(
+            {
+        userName: 'khoa987',
+        password: 'abcd',
+        recaptcha: null
+    })
+
+    useEffect(()=>{
+        if(!data.recaptcha) return;
+        axios.post('https://loginapizodinet.herokuapp.com/api/recaptcha/login',
+            data , {
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            }
+        ).then((res) => {
+            console.log(res)
+        }).catch((req) => {
+            console.log(req)
+        })
+    },[data.recaptcha])
+
+    const fetchData = useCallback(() => {
+        if (!executeRecaptcha) {
+            return;
+        }
+        executeRecaptcha('SignIn').then((result)=>{
+            setData({
+                ...data,
+                recaptcha: result
+            })
+        }).catch(req=>{
+            console.log('error', req)
+        })
+    },[executeRecaptcha])
+
+    const handleSubmit = useCallback((e: FormEvent<HTMLFormElement>)=>{
+        e.preventDefault();
+        fetchData();
+    },[])
+
+    const handleChange = useCallback((e: ChangeEvent<HTMLInputElement>)=>{
+        setData({
+            ...data,
+            [e.target.name]: e.target.value
+        })
+    },[])
+
+    return (
+        <div style={{
+            width: '100%',
+            height: '100vh',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center'
+        }}>
+            <form
+                style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    height: 200,
+                    justifyContent: 'space-between'
+                }}
+                onSubmit={handleSubmit}>
+                <p >
+                    User Name: <input type={'text'} name={'userName'} onChange={handleChange} />
+                </p>
+                <p>
+                    Password: &nbsp;&nbsp; <input type={'password'} name={'password'} onChange={handleChange} />
+                </p>
+                <button type={'submit'} >submit</button>
+            </form>
+        </div>
+
+    );
 }
 
 export default App;

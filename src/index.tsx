@@ -3,10 +3,23 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import { GoogleReCaptchaProvider } from 'react-google-recaptcha-v3';
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <GoogleReCaptchaProvider
+      reCaptchaKey="6LeV9k4dAAAAAH_R9gZUuB0sZM4fHFDuWV9E3xUK"
+      language="vi"
+      // useEnterprise="[optional_boolean_value]"
+      scriptProps={{
+        async: false, // optional, default to false,
+        defer: false, // optional, default to false
+        appendTo: 'body', // optional, default to "head", can be "head" or "body",
+        nonce: undefined // optional, default undefined
+      }}
+    >
+      <App />
+    </GoogleReCaptchaProvider>
   </React.StrictMode>,
   document.getElementById('root')
 );
