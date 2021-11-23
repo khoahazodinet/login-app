@@ -6,7 +6,6 @@ import reportWebVitals from './reportWebVitals';
 import { GoogleReCaptchaProvider } from 'react-google-recaptcha-v3';
 
 ReactDOM.render(
-  <React.StrictMode>
     <GoogleReCaptchaProvider
       reCaptchaKey="6LeV9k4dAAAAAH_R9gZUuB0sZM4fHFDuWV9E3xUK"
       language="vi"
@@ -14,13 +13,12 @@ ReactDOM.render(
       scriptProps={{
         async: false, // optional, default to false,
         defer: false, // optional, default to false
-        appendTo: 'body', // optional, default to "head", can be "head" or "body",
+        appendTo: 'head', // optional, default to "head", can be "head" or "body",
         nonce: undefined // optional, default undefined
       }}
     >
       <App />
-    </GoogleReCaptchaProvider>
-  </React.StrictMode>,
+    </GoogleReCaptchaProvider>,
   document.getElementById('root')
 );
 

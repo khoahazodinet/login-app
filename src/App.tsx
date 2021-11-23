@@ -8,13 +8,15 @@ function App() {
     const [data, setData] = useState<{
         userName: string, password: string, recaptcha: string|null}>(
             {
-        userName: 'khoa987',
-        password: 'abcd',
+        userName: '',
+        password: '',
         recaptcha: null
     })
 
     useEffect(()=>{
         if(!data.recaptcha) return;
+
+        console.log(data);
         axios.post('https://loginapizodinet.herokuapp.com/api/recaptcha/login',
             data , {
                 headers: {
@@ -30,9 +32,11 @@ function App() {
 
     const fetchData = useCallback(() => {
         if (!executeRecaptcha) {
+            console.log('recaptcha can not use');
             return;
         }
         executeRecaptcha('SignIn').then((result)=>{
+            console.log(result);
             setData({
                 ...data,
                 recaptcha: result
@@ -40,19 +44,19 @@ function App() {
         }).catch(req=>{
             console.log('error', req)
         })
-    },[executeRecaptcha])
-
-    const handleSubmit = useCallback((e: FormEvent<HTMLFormElement>)=>{
-        e.preventDefault();
-        fetchData();
     },[])
 
-    const handleChange = useCallback((e: ChangeEvent<HTMLInputElement>)=>{
+    const handleSubmit = (e: FormEvent<HTMLFormElement>)=>{
+        e.preventDefault();
+        fetchData();
+    }
+
+    const handleChange = (e: ChangeEvent<HTMLInputElement>)=>{
         setData({
             ...data,
             [e.target.name]: e.target.value
         })
-    },[])
+    }
 
     return (
         <div style={{
